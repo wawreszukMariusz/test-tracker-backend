@@ -7,6 +7,7 @@ const Scenario = require("./models/scenario.model.js");
 const scenarioRoute = require("./routes/scenario.route.js");
 const TestCase = require("./models/testcase.model.js");
 const testCaseRoute = require("./routes/testcase.route.js");
+const testStepRoute = require("./routes/teststep.route.js");
 const app = express();
 
 app.use(express.json());
@@ -47,3 +48,4 @@ mongoose
 // Routes
 app.use("/api/scenarios", scenarioRoute);
 app.use("/api/testCases", testCaseRoute);
+app.use("/api/testSteps", testStepRoute);
