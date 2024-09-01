@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const TestStepSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "TestSteop name is required"],
-    },
     expected: {
       type: String,
       required: false,
