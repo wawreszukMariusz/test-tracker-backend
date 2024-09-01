@@ -1,8 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const os = require("os"); // Nowy import dla uzyskania adresów IP
+
 const Scenario = require("./models/scenario.model.js");
 const scenarioRoute = require("./routes/scenario.route.js");
+const TestCase = require("./models/testcase.model.js");
+const testCaseRoute = require("./routes/testcase.route.js");
 const app = express();
 
 app.use(express.json());
@@ -12,8 +16,28 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to database.");
+
     app.listen(process.env.PORT || 3000, () => {
-      console.log("Server is running on port 3000");
+      const port = process.env.PORT || 3000;
+      const networkInterfaces = os.networkInterfaces();
+      const addresses = [];
+
+      for (const iface of Object.values(networkInterfaces)) {
+        for (const ifaceDetail of iface) {
+          if (ifaceDetail.family === "IPv4" && !ifaceDetail.internal) {
+            addresses.push(ifaceDetail.address);
+          }
+        }
+      }
+
+      console.log(`Server is running on port ${port}`);
+      if (addresses.length > 0) {
+        console.log(
+          `Available at the following IP addresses: ${addresses.join(", ")}`
+        );
+      } else {
+        console.log("No external IP addresses found.");
+      }
     });
   })
   .catch((error) => {
@@ -22,3 +46,4 @@ mongoose
 
 // Routes
 app.use("/api/scenarios", scenarioRoute);
+app.use("/api/testCases", testCaseRoute);
