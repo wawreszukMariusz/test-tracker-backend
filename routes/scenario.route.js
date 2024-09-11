@@ -7,6 +7,7 @@ const {
   updateScenario,
   deleteScenario,
   addScenario,
+  allFromScenarios,
 } = require("../controllers/scenario.controller.js");
 
 router.get("/", getScenarios);
