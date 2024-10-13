@@ -9,6 +9,18 @@ const testCaseResultSchema = new Schema({
 
 // Schemat dla TestExecute
 const testExecuteSchema = new Schema({
+  name: {
+    type: String,
+    required: true, // Zakładam, że nazwa jest wymagana
+  },
+  projectName: {
+    type: String,
+    required: true, // Zakładam, że nazwa jest wymagana
+  },
+  executionTime: {
+    type: String,
+    required: false,
+  },
   accessCode: {
     type: String,
     required: true,
@@ -20,6 +32,16 @@ const testExecuteSchema = new Schema({
       of: testCaseResultSchema,
     },
     required: true,
+  },
+  totalPassedTests: {
+    type: Number,
+    required: false,
+    default: 0, // Domyślna wartość to 0
+  },
+  totalFailedTests: {
+    type: Number,
+    required: false,
+    default: 0, // Domyślna wartość to 0
   },
 });
 

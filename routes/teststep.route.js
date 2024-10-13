@@ -6,12 +6,13 @@ const {
   updateTestStep,
   deleteTestStep,
   addTestStep,
+  addMultipleTestSteps,
 } = require("../controllers/teststep.controller.js");
 
 router.get("/", getTestSteps);
 router.get("/:testCaseId", getTestStepsByTestCaseId);
 router.put("/:id", updateTestStep);
 router.delete("/:id", deleteTestStep);
-router.post("/", addTestStep);
+router.post("/", addMultipleTestSteps);
 
 module.exports = router;

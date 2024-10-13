@@ -11,8 +11,8 @@ const getScenarios = async (req, res) => {
 
 const getScenario = async (req, res) => {
   try {
-    const { accessCode } = req.params;
-    const scenario = await Scenario.find({ accessCode });
+    const { projectId } = req.params;
+    const scenario = await Scenario.find({ projectId });
     res.status(200).json(scenario);
   } catch (error) {
     res.status(500).json({ message: error.message });

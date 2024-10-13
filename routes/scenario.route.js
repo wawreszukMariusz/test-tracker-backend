@@ -11,7 +11,7 @@ const {
 } = require("../controllers/scenario.controller.js");
 
 router.get("/", getScenarios);
-router.get("/:accessCode", getScenario);
+router.get("/:projectId", getScenario);
 router.put("/:id", updateScenario);
 router.delete("/:id", deleteScenario);
 router.post("/", addScenario);

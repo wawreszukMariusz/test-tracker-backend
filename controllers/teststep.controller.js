@@ -59,10 +59,28 @@ const addTestStep = async (req, res) => {
   }
 };
 
+const addMultipleTestSteps = async (req, res) => {
+  try {
+    const testSteps = req.body;
+
+    if (!Array.isArray(testSteps)) {
+      return res
+        .status(400)
+        .json({ message: "Data must be an array of test steps" });
+    }
+
+    const createdTestSteps = await TestStep.insertMany(testSteps);
+    res.status(201).json(createdTestSteps);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getTestSteps,
   getTestStepsByTestCaseId,
   updateTestStep,
   deleteTestStep,
   addTestStep,
+  addMultipleTestSteps,
 };
