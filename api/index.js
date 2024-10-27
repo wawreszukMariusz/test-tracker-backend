@@ -110,3 +110,5 @@ app.use("/api/testCases", testCaseRoute);
 app.use("/api/testSteps", testStepRoute);
 app.use("/api/testExecute", testExecuteRoute);
 app.use("/api/project", projectRoute);
+
+module.exports = app;
