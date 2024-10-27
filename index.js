@@ -104,6 +104,7 @@ app.get("/api/allFromScenarios", async (req, res) => {
 });
 
 // Routes
+app.get("/", (req, res) => res.send("Express on Vercel"));
 app.use("/api/scenarios", scenarioRoute);
 app.use("/api/testCases", testCaseRoute);
 app.use("/api/testSteps", testStepRoute);
