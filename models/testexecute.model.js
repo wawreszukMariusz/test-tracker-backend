@@ -25,6 +25,14 @@ const testExecuteSchema = new Schema({
     type: String,
     required: true,
   },
+  date: {
+    type: String,
+    required: false,
+  },
+  source: {
+    type: String,
+    required: false,
+  },
   scenarios: {
     type: Map,
     of: {
