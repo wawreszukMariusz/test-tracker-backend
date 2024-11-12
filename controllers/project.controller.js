@@ -109,21 +109,37 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
   const { accessCode } = req.params;
 
   try {
-    // Filtrujemy projekty po `accessCode`
-    const projects = await Project.find({ accessCode });
+    // Krok 1: Dopasowanie projektu na podstawie accessCode
+    const projects = await Project.aggregate([
+      {
+        $match: { accessCode: accessCode },
+      },
+    ]);
+
+    console.log("Projects after accessCode match:", projects);
+
     if (projects.length === 0) {
-      return res.status(404).json({ message: "Projects not found" });
+      return res
+        .status(404)
+        .json({ message: "No projects found with that access code" });
     }
 
+    // Krok 2: Połączenie z kolekcją `scenarios` z konwersją na ObjectId
     const results = await Project.aggregate([
       {
-        $match: { accessCode },
+        $match: { accessCode: accessCode },
       },
       {
         $lookup: {
           from: "scenarios",
-          localField: "_id",
-          foreignField: "projectId",
+          let: { projectId: { $toString: "$_id" } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$projectId", "$$projectId"] },
+              },
+            },
+          ],
           as: "scenarios",
         },
       },
@@ -133,8 +149,14 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
       {
         $lookup: {
           from: "testcases",
-          localField: "scenarios._id",
-          foreignField: "scenarioId",
+          let: { scenarioIdStr: { $toString: "$scenarios._id" } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$scenarioId", "$$scenarioIdStr"] },
+              },
+            },
+          ],
           as: "testcases",
         },
       },
@@ -155,9 +177,7 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
       },
     ]);
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: "No test cases found" });
-    }
+    console.log("Final aggregation results:", results);
 
     res.status(200).json(results);
   } catch (error) {
