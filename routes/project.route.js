@@ -17,4 +17,9 @@ router.get("/:accessCode", projectController.getProjectByAccessCode);
 router.post("/", upload.single("image"), projectController.createProject);
 router.put("/:id", upload.single("image"), projectController.updateProject);
 
+router.get(
+  "/testAutomationCount/:accessCode",
+  projectController.getTestCasesCountByAutomation
+);
+
 module.exports = router;

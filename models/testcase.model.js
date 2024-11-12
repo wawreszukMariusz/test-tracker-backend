@@ -20,6 +20,10 @@ const TestCaseSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    isAutomated: {
+      type: Boolean,
+      required: false,
+    },
   },
   {
     timestamps: true,

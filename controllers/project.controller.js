@@ -1,4 +1,6 @@
 const Project = require("../models/project.model");
+const Scenario = require("../models/scenario.model");
+const TestCase = require("../models/testcase.model");
 
 // Get all projects
 exports.getAllProjects = async (req, res) => {
@@ -98,6 +100,66 @@ exports.updateProject = async (req, res) => {
       id: updatedProject._id,
       message: "Project updated successfully",
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getTestCasesCountByAutomation = async (req, res) => {
+  const { accessCode } = req.params;
+
+  try {
+    // Filtrujemy projekty po `accessCode`
+    const projects = await Project.find({ accessCode });
+    if (projects.length === 0) {
+      return res.status(404).json({ message: "Projects not found" });
+    }
+
+    const results = await Project.aggregate([
+      {
+        $match: { accessCode },
+      },
+      {
+        $lookup: {
+          from: "scenarios",
+          localField: "_id",
+          foreignField: "projectId",
+          as: "scenarios",
+        },
+      },
+      {
+        $unwind: "$scenarios",
+      },
+      {
+        $lookup: {
+          from: "testcases",
+          localField: "scenarios._id",
+          foreignField: "scenarioId",
+          as: "testcases",
+        },
+      },
+      {
+        $unwind: "$testcases",
+      },
+      {
+        $group: {
+          _id: "$_id",
+          projectName: { $first: "$name" },
+          automatedCount: {
+            $sum: { $cond: [{ $eq: ["$testcases.isAutomated", true] }, 1, 0] },
+          },
+          notAutomatedCount: {
+            $sum: { $cond: [{ $eq: ["$testcases.isAutomated", false] }, 1, 0] },
+          },
+        },
+      },
+    ]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No test cases found" });
+    }
+
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
