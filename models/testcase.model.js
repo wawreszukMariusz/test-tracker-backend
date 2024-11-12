@@ -22,7 +22,7 @@ const TestCaseSchema = mongoose.Schema(
     },
     isAutomated: {
       type: Boolean,
-      required: false,
+      required: [true, "isAutomated parameter is required"],
     },
   },
   {
