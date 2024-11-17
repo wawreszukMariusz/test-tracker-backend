@@ -3,15 +3,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const os = require("os"); // Nowy import dla uzyskania adresów IP
 
-const Scenario = require("../models/scenario.model.js");
-const scenarioRoute = require("../routes/scenario.route.js");
-const TestCase = require("../models/testcase.model.js");
-const TestStep = require("../models/teststep.model.js");
-const testCaseRoute = require("../routes/testcase.route.js");
-const testStepRoute = require("../routes/teststep.route.js");
-const projectRoute = require("../routes/project.route.js");
-const testExecuteRoute = require("../routes/testexecute.route.js");
-const TestExecute = require("../models/testexecute.model.js");
+const Scenario = require("./models/scenario.model.js");
+const scenarioRoute = require("./routes/scenario.route.js");
+const TestCase = require("./models/testcase.model.js");
+const TestStep = require("./models/teststep.model.js");
+const testCaseRoute = require("./routes/testcase.route.js");
+const testStepRoute = require("./routes/teststep.route.js");
+const projectRoute = require("./routes/project.route.js");
+const testExecuteRoute = require("./routes/testexecute.route.js");
+const TestExecute = require("./models/testexecute.model.js");
+const userRoute = require("./routes/user.route.js");
 const app = express();
 
 app.use(express.json());
@@ -103,12 +104,12 @@ app.get("/api/allFromScenarios", async (req, res) => {
   }
 });
 
-// Routes
 app.get("/", (req, res) => res.send("Express on Vercel"));
 app.use("/api/scenarios", scenarioRoute);
 app.use("/api/testCases", testCaseRoute);
 app.use("/api/testSteps", testStepRoute);
 app.use("/api/testExecute", testExecuteRoute);
 app.use("/api/project", projectRoute);
+app.use("/api/user", userRoute);
 
 module.exports = app;
