@@ -12,6 +12,7 @@ const testStepRoute = require("./routes/teststep.route.js");
 const projectRoute = require("./routes/project.route.js");
 const testExecuteRoute = require("./routes/testexecute.route.js");
 const TestExecute = require("./models/testexecute.model.js");
+const userRoute = require("./routes/user.route.js");
 const app = express();
 
 app.use(express.json());
@@ -103,10 +104,10 @@ app.get("/api/allFromScenarios", async (req, res) => {
   }
 });
 
-// Routes
 app.get("/", (req, res) => res.send("Express on Vercel"));
 app.use("/api/scenarios", scenarioRoute);
 app.use("/api/testCases", testCaseRoute);
 app.use("/api/testSteps", testStepRoute);
 app.use("/api/testExecute", testExecuteRoute);
 app.use("/api/project", projectRoute);
+app.use("/api/user", userRoute);

@@ -109,14 +109,11 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
   const { accessCode } = req.params;
 
   try {
-    // Krok 1: Dopasowanie projektu na podstawie accessCode
     const projects = await Project.aggregate([
       {
         $match: { accessCode: accessCode },
       },
     ]);
-
-    console.log("Projects after accessCode match:", projects);
 
     if (projects.length === 0) {
       return res
@@ -124,7 +121,6 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
         .json({ message: "No projects found with that access code" });
     }
 
-    // Krok 2: Połączenie z kolekcją `scenarios` z konwersją na ObjectId
     const results = await Project.aggregate([
       {
         $match: { accessCode: accessCode },
@@ -176,8 +172,6 @@ exports.getTestCasesCountByAutomation = async (req, res) => {
         },
       },
     ]);
-
-    console.log("Final aggregation results:", results);
 
     res.status(200).json(results);
   } catch (error) {
