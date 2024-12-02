@@ -33,6 +33,7 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       user: {
+        id: user._id,
         email: user.email,
         company: user.company,
         accessCode: user.accessCode,
@@ -89,8 +90,78 @@ const createUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params; // Get the user ID from the URL parameter
+  const { email, password, company, accessCode, role } = req.body;
+
+  if (!email && !password && !company && !accessCode && !role) {
+    return res.status(400).json({ message: "No fields to update" });
+  }
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update fields if provided in the request body
+    if (email) user.email = email;
+    if (password) user.password = await bcrypt.hash(password, 10); // Hash the password if it's updated
+    if (company) user.company = company;
+    if (accessCode) user.accessCode = accessCode;
+    if (role) user.role = role;
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({
+      message: "User updated successfully",
+      user: {
+        email: user.email,
+        company: user.company,
+        accessCode: user.accessCode,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      user: {
+        id: user._id,
+        email: user.email,
+        company: user.company,
+        accessCode: user.accessCode,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user", error });
+  }
+};
+
 module.exports = {
   getAllUsers,
   loginUser,
   createUser,
+  updateUser,
+  getUserById,
 };

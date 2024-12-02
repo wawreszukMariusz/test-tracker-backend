@@ -13,6 +13,7 @@ const projectRoute = require("./routes/project.route.js");
 const testExecuteRoute = require("./routes/testexecute.route.js");
 const TestExecute = require("./models/testexecute.model.js");
 const userRoute = require("./routes/user.route.js");
+const accessCodeRoute = require("./routes/accesscode.route.js");
 const app = express();
 
 app.use(express.json());
@@ -111,5 +112,6 @@ app.use("/api/testSteps", testStepRoute);
 app.use("/api/testExecute", testExecuteRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/user", userRoute);
+app.use("/api/accessCode", accessCodeRoute);
 
 module.exports = app;
