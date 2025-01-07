@@ -18,7 +18,7 @@ const ScenarioSchema = mongoose.Schema(
     },
     projectId: {
       type: String,
-      required: true, // Jeśli chcesz, aby pole było opcjonalne, ustaw `required: false`. Jeśli ma być obowiązkowe, ustaw `required: true`.
+      required: true,
     },
   },
   {

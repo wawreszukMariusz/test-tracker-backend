@@ -2,7 +2,6 @@ const Project = require("../models/project.model");
 const Scenario = require("../models/scenario.model");
 const TestCase = require("../models/testcase.model");
 
-// Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find();
@@ -43,10 +42,10 @@ exports.getProjectByAccessCode = async (req, res) => {
 };
 
 exports.createProject = async (req, res) => {
-  console.log(req.file); // Sprawdź, co jest w req.file
+  console.log(req.file);
 
   const { name, accessCode } = req.body;
-  const image = req.file; // Multer places the file object on req.file
+  const image = req.file;
 
   if (!image) {
     return res.status(400).json({ message: "Image file is required" });
@@ -57,8 +56,8 @@ exports.createProject = async (req, res) => {
       name,
       accessCode,
       image: {
-        data: image.buffer, // Buffer for binary data
-        contentType: image.mimetype, // Type of the image (e.g., 'image/jpeg')
+        data: image.buffer,
+        contentType: image.mimetype,
       },
     });
 
@@ -72,21 +71,18 @@ exports.createProject = async (req, res) => {
 exports.updateProject = async (req, res) => {
   const { id } = req.params;
   const { name, accessCode } = req.body;
-  const image = req.file; // If a new image is uploaded
+  const image = req.file;
 
   try {
-    // Find the project by ID
     const project = await Project.findById(id);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // Update the fields if they exist in the request
     if (name) project.name = name;
     if (accessCode) project.accessCode = accessCode;
 
-    // If a new image is provided, update the image field
     if (image) {
       project.image = {
         data: image.buffer,
@@ -94,7 +90,6 @@ exports.updateProject = async (req, res) => {
       };
     }
 
-    // Save the updated project
     const updatedProject = await project.save();
     res.status(200).json({
       id: updatedProject._id,

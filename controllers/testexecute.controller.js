@@ -1,6 +1,5 @@
 const TestExecute = require("../models/testexecute.model.js");
 
-// Pobierz TestExecute na podstawie ID
 exports.getTestExecuteById = async (req, res) => {
   try {
     const testExecute = await TestExecute.findById(req.params.id);
@@ -13,7 +12,6 @@ exports.getTestExecuteById = async (req, res) => {
   }
 };
 
-// Pobierz wszystkie TestExecute po accessCode
 exports.getTestExecuteByAccessCode = async (req, res) => {
   try {
     const testExecutes = await TestExecute.find({
@@ -30,7 +28,6 @@ exports.getTestExecuteByAccessCode = async (req, res) => {
   }
 };
 
-// Pobierz wszystkie TestExecute
 exports.getAllTestExecutes = async (req, res) => {
   try {
     const testExecutes = await TestExecute.find();
@@ -57,7 +54,6 @@ exports.saveTestExecute = async (req, res) => {
       totalFailedTests,
     } = req.body;
 
-    // Utwórz nowy obiekt TestExecute
     const testExecute = new TestExecute({
       name,
       projectName,
@@ -70,10 +66,8 @@ exports.saveTestExecute = async (req, res) => {
       totalFailedTests,
     });
 
-    // Zapisz w bazie danych
     const savedTestExecute = await testExecute.save();
 
-    // Zwróć ID utworzonego obiektu w odpowiedzi
     res.status(201).json({
       message: "Test results saved successfully!",
       id: savedTestExecute._id,

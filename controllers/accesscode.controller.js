@@ -1,6 +1,5 @@
 const AccessCode = require("../models/accesscode.model");
 
-// Pobierz wszystkie AccessCode
 const getAllAccessCodes = async (req, res) => {
   try {
     const accessCodes = await AccessCode.find();
@@ -10,7 +9,6 @@ const getAllAccessCodes = async (req, res) => {
   }
 };
 
-// Pobierz AccessCode dla podanego accessCode
 const getAccessCodeByCode = async (req, res) => {
   const { accessCode } = req.params;
   try {
@@ -24,14 +22,13 @@ const getAccessCodeByCode = async (req, res) => {
   }
 };
 
-// Utwórz nowy AccessCode lub zwróć istniejący
 const createAccessCode = async (req, res) => {
   const { accessCode, password, userPermissions } = req.body;
 
   try {
     const existingCode = await AccessCode.findOne({ accessCode });
     if (existingCode) {
-      return res.status(200).json(existingCode); // Zwróć istniejący AccessCode
+      return res.status(200).json(existingCode);
     }
 
     const newAccessCode = new AccessCode({
@@ -46,15 +43,14 @@ const createAccessCode = async (req, res) => {
   }
 };
 
-// Zaktualizuj AccessCode
 const updateAccessCode = async (req, res) => {
   const { accessCode } = req.params;
 
   try {
     const updatedCode = await AccessCode.findOneAndUpdate(
       { accessCode },
-      { $set: req.body }, // Aktualizuje dowolne pola przekazane w ciele żądania
-      { new: true, runValidators: true } // Zwróć zaktualizowany dokument i waliduj dane
+      { $set: req.body },
+      { new: true, runValidators: true }
     );
 
     if (!updatedCode) {
@@ -70,7 +66,6 @@ const updateAccessCode = async (req, res) => {
 const getAccessCodeByCodeAndPassword = async (req, res) => {
   const { accessCode, password } = req.body;
 
-  // Sprawdź, czy podano oba pola
   if (!accessCode || !password) {
     return res
       .status(400)
@@ -84,12 +79,10 @@ const getAccessCodeByCodeAndPassword = async (req, res) => {
       return res.status(404).json({ message: "AccessCode not found" });
     }
 
-    // Sprawdź poprawność hasła
     if (code.password !== password) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    // Jeśli wszystko się zgadza, zwróć dane AccessCode
     res.status(200).json(code);
   } catch (error) {
     res.status(500).json({ message: "Error verifying access code", error });
@@ -99,7 +92,6 @@ const getAccessCodeByCodeAndPassword = async (req, res) => {
 const createOrValidateAccessCode = async (req, res) => {
   const { accessCode, password, userPermissions } = req.body;
 
-  // Sprawdź, czy wszystkie wymagane pola są podane
   if (!accessCode || !password) {
     return res
       .status(400)
@@ -107,20 +99,16 @@ const createOrValidateAccessCode = async (req, res) => {
   }
 
   try {
-    // Sprawdź, czy AccessCode już istnieje
     const existingCode = await AccessCode.findOne({ accessCode });
 
     if (existingCode) {
-      // Jeśli istnieje, sprawdź hasło
       if (existingCode.password !== password) {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      // Zwróć istniejący AccessCode, jeśli hasło jest poprawne
       return res.status(200).json(existingCode);
     }
 
-    // Jeśli AccessCode nie istnieje, utwórz nowy
     const newAccessCode = new AccessCode({
       accessCode,
       password,
@@ -129,7 +117,6 @@ const createOrValidateAccessCode = async (req, res) => {
 
     const savedCode = await newAccessCode.save();
 
-    // Zwróć nowo utworzony AccessCode
     res.status(201).json(savedCode);
   } catch (error) {
     res.status(500).json({ message: "Error handling access code", error });

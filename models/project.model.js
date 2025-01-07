@@ -7,8 +7,8 @@ const ProjectSchema = mongoose.Schema(
       required: false,
     },
     image: {
-      data: Buffer, // Przechowuje dane binarne obrazka
-      contentType: String, // Przechowuje typ pliku (np. 'image/jpeg')
+      data: Buffer,
+      contentType: String,
     },
     accessCode: {
       type: String,

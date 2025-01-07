@@ -91,7 +91,7 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params; // Get the user ID from the URL parameter
+  const { id } = req.params;
   const { email, password, company, accessCode, role } = req.body;
 
   if (!email && !password && !company && !accessCode && !role) {
@@ -99,21 +99,18 @@ const updateUser = async (req, res) => {
   }
 
   try {
-    // Find the user by ID
     const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update fields if provided in the request body
     if (email) user.email = email;
-    if (password) user.password = await bcrypt.hash(password, 10); // Hash the password if it's updated
+    if (password) user.password = await bcrypt.hash(password, 10);
     if (company) user.company = company;
     if (accessCode) user.accessCode = accessCode;
     if (role) user.role = role;
 
-    // Save the updated user
     await user.save();
 
     res.status(200).json({
