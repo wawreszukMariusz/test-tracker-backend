@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const os = require("os"); // Nowy import dla uzyskania adresów IP
+const os = require("os");
 
 const Scenario = require("./models/scenario.model.js");
 const scenarioRoute = require("./routes/scenario.route.js");
@@ -55,21 +55,17 @@ app.get("/api/allFromScenarios", async (req, res) => {
   try {
     const scenarioIds = req.query.ids || [];
 
-    // Pobierz scenariusze
     const scenarios = await Scenario.find({ _id: { $in: scenarioIds } }).exec();
 
-    // Pobierz test case'y dla pobranych scenariuszy
     const testCases = await TestCase.find({
       scenarioId: { $in: scenarioIds },
     }).exec();
 
-    // Pobierz test step'y dla pobranych test case'ów
     const testCaseIds = testCases.map((testCase) => testCase._id.toString());
     const testSteps = await TestStep.find({
       testCaseId: { $in: testCaseIds },
     }).exec();
 
-    // Mapowanie danych
     const result = scenarios.map((scenario) => {
       return {
         id: scenario._id,

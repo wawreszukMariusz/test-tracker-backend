@@ -1,4 +1,5 @@
 const AccessCode = require("../models/accesscode.model");
+const bcrypt = require("bcrypt");
 
 const getAllAccessCodes = async (req, res) => {
   try {
@@ -31,9 +32,11 @@ const createAccessCode = async (req, res) => {
       return res.status(200).json(existingCode);
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newAccessCode = new AccessCode({
       accessCode,
-      password,
+      password: hashedPassword,
       userPermissions,
     });
     const savedCode = await newAccessCode.save();
@@ -79,7 +82,8 @@ const getAccessCodeByCodeAndPassword = async (req, res) => {
       return res.status(404).json({ message: "AccessCode not found" });
     }
 
-    if (code.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, code.password);
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
@@ -102,16 +106,22 @@ const createOrValidateAccessCode = async (req, res) => {
     const existingCode = await AccessCode.findOne({ accessCode });
 
     if (existingCode) {
-      if (existingCode.password !== password) {
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        existingCode.password
+      );
+      if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid password" });
       }
 
       return res.status(200).json(existingCode);
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newAccessCode = new AccessCode({
       accessCode,
-      password,
+      password: hashedPassword,
       userPermissions,
     });
 
